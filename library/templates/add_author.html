@@ -1,0 +1,40 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} Add Author {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+<div class="container">
+    <form method="POST"> {% csrf_token %}
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Author Name</i></label>
+            <input type="text" class="form-control mt-2" name="name" placeholder="Enter name of the Author" required>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Date of Birth</i></label>
+            <input type="date" class="form-control mt-2" name="date_of_birth">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Country</i></label>
+            <input type="text" class="form-control mt-2" name="country" placeholder="Enter Country" required>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-outline-primary mt-4">Add Author</button>
+</div>
+</form>
+{% endblock %}
+{% block js %}
+<script>
+    {% if alert %}
+    alert("Author is added successfully.")
+    document.location = "/view_authors"
+    {% endif %}
+</script>
+{% endblock %}

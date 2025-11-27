@@ -1,0 +1,41 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} All Fines {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center"><u>All Fines List</u></h1>
+    <table class="table table-hover" id="example">
+        <thead>
+            <tr>
+                <th>Sr.No</th>
+                <th>Student</th>
+                <th>Amount</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fine in fines %}
+            <tr>
+                <td>{{forloop.counter}}.</td>
+                <td>{{fine.student.user.username}}</td>
+                <td>₹ {{fine.amount}}</td>
+                <td>{{fine.reason}}</td>
+                <td>{% if fine.paid %}<span class="badge badge-success">Paid</span>{% else %}<span class="badge badge-warning">Unpaid</span>{% endif %}</td>
+                <td>{{fine.created_date}}</td>
+                <td>
+                    {% if not fine.paid %}
+                    <a href="/mark_fine_paid/{{fine.id}}/" class="btn btn-success btn-sm">Mark Paid</a>
+                    {% endif %}
+                    <a href="/delete_fine/{{fine.id}}/" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this fine?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

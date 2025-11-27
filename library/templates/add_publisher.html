@@ -1,0 +1,40 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} Add Publisher {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+<div class="container">
+    <form method="POST"> {% csrf_token %}
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Publisher Name</i></label>
+            <input type="text" class="form-control mt-2" name="name" placeholder="Enter name of the Publisher" required>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Address</i></label>
+            <textarea class="form-control mt-2" name="address" placeholder="Enter Address" required></textarea>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="form-group col-md-12">
+            <label><i style="font-weight: bold;">Contact</i></label>
+            <input type="text" class="form-control mt-2" name="contact" placeholder="Enter Contact" required>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-outline-primary mt-4">Add Publisher</button>
+</div>
+</form>
+{% endblock %}
+{% block js %}
+<script>
+    {% if alert %}
+    alert("Publisher is added successfully.")
+    document.location = "/view_publishers"
+    {% endif %}
+</script>
+{% endblock %}

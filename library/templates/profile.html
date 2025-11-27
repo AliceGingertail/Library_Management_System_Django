@@ -18,6 +18,9 @@
 .profile-img img{
     border-radius: 50%;
     border: 5px solid #11998e;
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
 }
 .profile-head h5{
     color: #333;
@@ -54,7 +57,7 @@
         <div class="col-md-4">
             <div class="profile-img">
                 {% if user.student.image %}
-                    <img src="{{user.student.image.url}}" alt="Фото студента" width="250px" height="250px" class="img-fluid">
+                    <img src="{{user.student.image.url}}" alt="Фото студента">
                 {% else %}
                     <div class="d-flex justify-content-center align-items-center" style="width: 250px; height: 250px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto;">
                         <i class="fas fa-user" style="font-size: 100px; color: white;"></i>

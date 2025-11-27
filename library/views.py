@@ -183,9 +183,14 @@ def student_registration(request):
             )
 
             # Создаем студента
-            student = form.save(commit=False)
-            student.user = user
-            student.save()
+            student = Student.objects.create(
+                user=user,
+                classroom=form.cleaned_data['classroom'],
+                branch=form.cleaned_data.get('branch'),
+                roll_no=form.cleaned_data.get('roll_no', ''),
+                phone=form.cleaned_data.get('phone', ''),
+                image=form.cleaned_data.get('image')
+            )
 
             alert = True
             return render(request, "student_registration.html", {'form': forms.StudentRegistrationForm(), 'alert': alert})

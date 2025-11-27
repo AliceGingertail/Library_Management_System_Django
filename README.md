@@ -1,13 +1,127 @@
 # Library Management System using Python on Django Framework
 
-### About the Project
-Library Management System Project created with Django. Developed web services using Python (Django Framework) where an admin can perform <code>C R U D</code> (Create, Read, Update and Delete) operations
+### О проекте / About the Project
 
-**Prerequisite:** 
+**Система управления библиотекой** - это полнофункциональное веб-приложение, разработанное с использованием Django Framework. Проект предоставляет комплексное решение для управления библиотечными операциями, включая управление книгами, студентами, авторами и выдачей книг.
 
-Backend: <code>[Python](https://github.com/mrankitgupta/Python-Roadmap)</code> 📑 & <code>[Django Framework](https://github.com/mrankitgupta)</code> 🗂️
+**Library Management System** is a full-featured web application developed using Django Framework. The project provides a comprehensive solution for managing library operations, including books, students, authors and book issues management.
 
-Frontend: <code>[HTML](https://github.com/mrankitgupta)</code> & <code>[CSS](https://github.com/mrankitgupta)</code>
+#### Ключевые возможности / Key Features
+
+- **Реляционная база данных** с правильно настроенными связями между таблицами
+- **Relational database** with properly configured table relationships
+- **Интуитивная админ-панель** с выпадающими списками для удобного выбора связанных объектов
+- **Intuitive admin panel** with dropdown lists for easy selection of related objects
+- **CRUD операции** (создание, чтение, обновление, удаление) для всех сущностей
+- **CRUD operations** (Create, Read, Update, Delete) for all entities
+- **Система авторизации** для студентов и администраторов
+- **Authentication system** for students and administrators
+- **Автоматический расчет штрафов** за просроченные книги
+- **Automatic fine calculation** for overdue books
+
+### Структура базы данных / Database Structure
+
+Приложение использует следующие взаимосвязанные модели:
+
+#### 1. **Author** (Авторы)
+- Имя автора
+- Биография
+- Связь: один автор → много книг
+
+#### 2. **Category** (Категории)
+- Название категории
+- Описание
+- Связь: одна категория → много книг
+
+#### 3. **Book** (Книги)
+- Название книги
+- **ForeignKey** → Author (выбор из существующих авторов)
+- ISBN
+- **ForeignKey** → Category (выбор из существующих категорий)
+
+#### 4. **Student** (Студенты)
+- **OneToOneField** → User (связь с пользователем Django)
+- Класс
+- Филиал
+- Номер студента
+- Телефон
+- Фото
+
+#### 5. **IssuedBook** (Выданные книги)
+- **ForeignKey** → Student (выбор студента из списка)
+- **ForeignKey** → Book (выбор книги из списка)
+- Дата выдачи
+- Дата возврата
+- Статус возврата
+
+Developed web services using Python (Django Framework) where an admin can perform <code>C R U D</code> (Create, Read, Update and Delete) operations
+
+### Установка и запуск / Installation and Setup
+
+**Требования / Prerequisites:**
+
+Backend: `Python 3.8+` & `Django 5.0+`
+Frontend: `HTML` & `CSS`
+
+**Шаги установки / Installation Steps:**
+
+```bash
+# 1. Клонируйте репозиторий / Clone the repository
+git clone <repository-url>
+cd Library_Management_System_Django
+
+# 2. Установите зависимости / Install dependencies
+pip install -r requirements.txt
+
+# 3. Примените миграции / Apply migrations
+python manage.py migrate
+
+# 4. Создайте суперпользователя / Create a superuser
+python manage.py createsuperuser
+
+# 5. Запустите сервер / Run the development server
+python manage.py runserver
+
+# 6. (Опционально) Заполните базу тестовыми данными
+# (Optional) Populate database with test data
+python populate_db.py
+
+# 7. Откройте в браузере / Open in browser
+# Admin panel: http://127.0.0.1:8000/admin
+# Main site: http://127.0.0.1:8000
+```
+
+### Как использовать выпадающие списки / How to use dropdown lists
+
+При добавлении данных через админ-панель:
+
+**When adding data via admin panel:**
+
+1. **Добавление автора / Adding an author:**
+   - Перейдите в раздел "Авторы" / Go to "Authors" section
+   - Нажмите "Добавить автора" / Click "Add Author"
+   - Заполните имя и биографию / Fill in name and biography
+
+2. **Добавление категории / Adding a category:**
+   - Перейдите в раздел "Категории" / Go to "Categories" section
+   - Нажмите "Добавить категорию" / Click "Add Category"
+   - Заполните название и описание / Fill in name and description
+
+3. **Добавление книги / Adding a book:**
+   - Перейдите в раздел "Книги" / Go to "Books" section
+   - Нажмите "Добавить книгу" / Click "Add Book"
+   - **Автор** выбирается из выпадающего списка существующих авторов
+   - **Author** is selected from dropdown list of existing authors
+   - **Категория** выбирается из выпадающего списка существующих категорий
+   - **Category** is selected from dropdown list of existing categories
+
+4. **Выдача книги студенту / Issuing a book to student:**
+   - Перейдите в раздел "Выданные книги" / Go to "Issued Books" section
+   - Нажмите "Добавить выданную книгу" / Click "Add Issued Book"
+   - **Студент** выбирается из выпадающего списка
+   - **Student** is selected from dropdown list
+   - **Книга** выбирается из выпадающего списка
+   - **Book** is selected from dropdown list
 
 ### Objective
 

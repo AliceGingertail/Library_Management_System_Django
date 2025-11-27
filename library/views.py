@@ -13,28 +13,16 @@ def index(request):
 @login_required(login_url = '/admin_login')
 def add_book(request):
     if request.method == "POST":
-        name = request.POST['name']
-        author_id = request.POST.get('author')
-        isbn = request.POST['isbn']
-        category_id = request.POST.get('category')
-
-        # Получаем объекты автора и категории
-        try:
-            author = Author.objects.get(id=author_id)
-            category = Category.objects.get(id=category_id) if category_id else None
-
-            books = Book.objects.create(name=name, author=author, isbn=isbn, category=category)
-            books.save()
+        form = forms.BookForm(request.POST)
+        if form.is_valid():
+            form.save()
             alert = True
-            return render(request, "add_book.html", {'alert':alert})
-        except (Author.DoesNotExist, Category.DoesNotExist) as e:
-            error = "Автор или категория не найдены"
-            return render(request, "add_book.html", {'error':error})
-
-    # Передаем списки авторов и категорий для выпадающих списков
-    authors = Author.objects.all()
-    categories = Category.objects.all()
-    return render(request, "add_book.html", {'authors': authors, 'categories': categories})
+            return render(request, "add_book.html", {'form': forms.BookForm(), 'alert': alert})
+        else:
+            return render(request, "add_book.html", {'form': form})
+    else:
+        form = forms.BookForm()
+    return render(request, "add_book.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_books(request):
@@ -48,17 +36,17 @@ def view_students(request):
 
 @login_required(login_url = '/admin_login')
 def issue_book(request):
-    form = forms.IssueBookForm()
     if request.method == "POST":
         form = forms.IssueBookForm(request.POST)
         if form.is_valid():
-            obj = models.IssuedBook()
-            obj.student_id = form.cleaned_data['name2']
-            obj.book_id = form.cleaned_data['isbn2']
-            obj.save()
+            form.save()
             alert = True
-            return render(request, "issue_book.html", {'obj':obj, 'alert':alert})
-    return render(request, "issue_book.html", {'form':form})
+            return render(request, "issue_book.html", {'form': forms.IssueBookForm(), 'alert': alert})
+        else:
+            return render(request, "issue_book.html", {'form': form})
+    else:
+        form = forms.IssueBookForm()
+    return render(request, "issue_book.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_issued_book(request):
@@ -382,18 +370,16 @@ def delete_staff(request, myid):
 @login_required(login_url = '/admin_login')
 def add_reservation(request):
     if request.method == "POST":
-        student_id = request.POST['student']
-        book_id = request.POST['book']
-
-        student = Student.objects.get(id=student_id)
-        book = Book.objects.get(id=book_id)
-        reservation = Reservation.objects.create(student=student, book=book)
-        reservation.save()
-        alert = True
-        return render(request, "add_reservation.html", {'alert':alert, 'students': Student.objects.all(), 'books': Book.objects.all()})
-    students = Student.objects.all()
-    books = Book.objects.all()
-    return render(request, "add_reservation.html", {'students': students, 'books': books})
+        form = forms.ReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_reservation.html", {'form': forms.ReservationForm(), 'alert': alert})
+        else:
+            return render(request, "add_reservation.html", {'form': form})
+    else:
+        form = forms.ReservationForm()
+    return render(request, "add_reservation.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_reservations(request):
@@ -411,20 +397,16 @@ def delete_reservation(request, myid):
 @login_required(login_url = '/admin_login')
 def add_fine(request):
     if request.method == "POST":
-        issued_book_id = request.POST['issued_book']
-        student_id = request.POST['student']
-        amount = request.POST['amount']
-        reason = request.POST['reason']
-
-        issued_book = IssuedBook.objects.get(id=issued_book_id)
-        student = Student.objects.get(id=student_id)
-        fine = Fines.objects.create(issued_book=issued_book, student=student, amount=amount, reason=reason)
-        fine.save()
-        alert = True
-        return render(request, "add_fine.html", {'alert':alert, 'issued_books': IssuedBook.objects.all(), 'students': Student.objects.all()})
-    issued_books = IssuedBook.objects.all()
-    students = Student.objects.all()
-    return render(request, "add_fine.html", {'issued_books': issued_books, 'students': students})
+        form = forms.FineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_fine.html", {'form': forms.FineForm(), 'alert': alert})
+        else:
+            return render(request, "add_fine.html", {'form': form})
+    else:
+        form = forms.FineForm()
+    return render(request, "add_fine.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_fines(request):

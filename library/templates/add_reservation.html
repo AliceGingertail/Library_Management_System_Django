@@ -1,42 +1,21 @@
 {% extends 'admin_navbar.html' %}
 {% load static %}
-{% block title %} Add Reservation {% endblock %}
+{% block title %} Добавить резервирование {% endblock %}
 {% block css %}
 {% endblock %}
 {% block body %}
 <div class="container">
+    <h2 class="mt-4 mb-4">Добавить резервирование</h2>
     <form method="POST"> {% csrf_token %}
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Student</i></label>
-            <select class="form-control mt-2" name="student" required>
-                <option value="">Select Student</option>
-                {% for student in students %}
-                <option value="{{student.id}}">{{student.user.username}} - {{student.roll_no}}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Book</i></label>
-            <select class="form-control mt-2" name="book" required>
-                <option value="">Select Book</option>
-                {% for book in books %}
-                <option value="{{book.id}}">{{book.name}} - {{book.isbn}}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-outline-primary mt-4">Add Reservation</button>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-outline-primary mt-4">Добавить резервирование</button>
+    </form>
 </div>
-</form>
 {% endblock %}
 {% block js %}
 <script>
     {% if alert %}
-    alert("Reservation is added successfully.")
+    alert("Резервирование успешно добавлено.")
     document.location = "/view_reservations"
     {% endif %}
 </script>

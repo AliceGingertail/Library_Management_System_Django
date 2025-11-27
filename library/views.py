@@ -8,7 +8,8 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 
 def index(request):
-    return render(request, "index.html")
+    books = Book.objects.select_related('author', 'publisher', 'category', 'branch').all()
+    return render(request, "index.html", {'books': books})
 
 @login_required(login_url = '/admin_login')
 def add_book(request):

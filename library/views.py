@@ -164,63 +164,77 @@ def change_password(request):
 
 def student_registration(request):
     if request.method == "POST":
-        username = request.POST['username']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        phone = request.POST['phone']
-        branch = request.POST['branch']
-        classroom = request.POST['classroom']
-        roll_no = request.POST['roll_no']
-        image = request.FILES['image']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
+        form = forms.StudentRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Создаем пользователя
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name']
+            )
 
-        if password != confirm_password:
-            passnotmatch = True
-            return render(request, "student_registration.html", {'passnotmatch':passnotmatch})
+            # Создаем студента
+            student = form.save(commit=False)
+            student.user = user
+            student.save()
 
-        user = User.objects.create_user(username=username, email=email, password=password,first_name=first_name, last_name=last_name)
-        student = Student.objects.create(user=user, phone=phone, branch=branch, classroom=classroom,roll_no=roll_no, image=image)
-        user.save()
-        student.save()
-        alert = True
-        return render(request, "student_registration.html", {'alert':alert})
-    return render(request, "student_registration.html")
+            alert = True
+            return render(request, "student_registration.html", {'form': forms.StudentRegistrationForm(), 'alert': alert})
+        else:
+            return render(request, "student_registration.html", {'form': form})
+    else:
+        form = forms.StudentRegistrationForm()
+    return render(request, "student_registration.html", {'form': form})
 
 def student_login(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            if request.user.is_superuser:
-                return HttpResponse("You are not a student!!")
+            if user is not None:
+                login(request, user)
+                if request.user.is_superuser:
+                    error = "Вы не студент!"
+                    return render(request, "student_login.html", {'form': form, 'error': error})
+                else:
+                    return redirect("/profile")
             else:
-                return redirect("/profile")
+                error = "Неверное имя пользователя или пароль"
+                return render(request, "student_login.html", {'form': form, 'error': error})
         else:
-            alert = True
-            return render(request, "student_login.html", {'alert':alert})
-    return render(request, "student_login.html")
+            return render(request, "student_login.html", {'form': form})
+    else:
+        form = forms.LoginForm()
+    return render(request, "student_login.html", {'form': form})
 
 def admin_login(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            if request.user.is_superuser:
-                return redirect("/add_book")
+            if user is not None:
+                login(request, user)
+                if request.user.is_superuser:
+                    return redirect("/add_book")
+                else:
+                    error = "Вы не администратор"
+                    return render(request, "admin_login.html", {'form': form, 'error': error})
             else:
-                return HttpResponse("You are not an admin.")
+                error = "Неверное имя пользователя или пароль"
+                return render(request, "admin_login.html", {'form': form, 'error': error})
         else:
-            alert = True
-            return render(request, "admin_login.html", {'alert':alert})
-    return render(request, "admin_login.html")
+            return render(request, "admin_login.html", {'form': form})
+    else:
+        form = forms.LoginForm()
+    return render(request, "admin_login.html", {'form': form})
 
 def Logout(request):
     logout(request)
@@ -231,15 +245,16 @@ def Logout(request):
 @login_required(login_url = '/admin_login')
 def add_author(request):
     if request.method == "POST":
-        name = request.POST['name']
-        date_of_birth = request.POST.get('date_of_birth')
-        country = request.POST['country']
-
-        author = Author.objects.create(name=name, date_of_birth=date_of_birth if date_of_birth else None, country=country)
-        author.save()
-        alert = True
-        return render(request, "add_author.html", {'alert':alert})
-    return render(request, "add_author.html")
+        form = forms.AuthorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_author.html", {'form': forms.AuthorForm(), 'alert': alert})
+        else:
+            return render(request, "add_author.html", {'form': form})
+    else:
+        form = forms.AuthorForm()
+    return render(request, "add_author.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_authors(request):
@@ -257,15 +272,16 @@ def delete_author(request, myid):
 @login_required(login_url = '/admin_login')
 def add_publisher(request):
     if request.method == "POST":
-        name = request.POST['name']
-        address = request.POST['address']
-        contact = request.POST['contact']
-
-        publisher = Publisher.objects.create(name=name, address=address, contact=contact)
-        publisher.save()
-        alert = True
-        return render(request, "add_publisher.html", {'alert':alert})
-    return render(request, "add_publisher.html")
+        form = forms.PublisherForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_publisher.html", {'form': forms.PublisherForm(), 'alert': alert})
+        else:
+            return render(request, "add_publisher.html", {'form': form})
+    else:
+        form = forms.PublisherForm()
+    return render(request, "add_publisher.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_publishers(request):
@@ -283,14 +299,16 @@ def delete_publisher(request, myid):
 @login_required(login_url = '/admin_login')
 def add_category(request):
     if request.method == "POST":
-        name = request.POST['name']
-        description = request.POST.get('description', '')
-
-        category = Category.objects.create(name=name, description=description)
-        category.save()
-        alert = True
-        return render(request, "add_category.html", {'alert':alert})
-    return render(request, "add_category.html")
+        form = forms.CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_category.html", {'form': forms.CategoryForm(), 'alert': alert})
+        else:
+            return render(request, "add_category.html", {'form': form})
+    else:
+        form = forms.CategoryForm()
+    return render(request, "add_category.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_categories(request):
@@ -308,15 +326,16 @@ def delete_category(request, myid):
 @login_required(login_url = '/admin_login')
 def add_branch(request):
     if request.method == "POST":
-        name = request.POST['name']
-        address = request.POST['address']
-        phone = request.POST['phone']
-
-        branch = LibraryBranch.objects.create(name=name, address=address, phone=phone)
-        branch.save()
-        alert = True
-        return render(request, "add_branch.html", {'alert':alert})
-    return render(request, "add_branch.html")
+        form = forms.LibraryBranchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "add_branch.html", {'form': forms.LibraryBranchForm(), 'alert': alert})
+        else:
+            return render(request, "add_branch.html", {'form': form})
+    else:
+        form = forms.LibraryBranchForm()
+    return render(request, "add_branch.html", {'form': form})
 
 @login_required(login_url = '/admin_login')
 def view_branches(request):

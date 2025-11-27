@@ -14,15 +14,27 @@ def index(request):
 def add_book(request):
     if request.method == "POST":
         name = request.POST['name']
-        author = request.POST['author']
+        author_id = request.POST.get('author')
         isbn = request.POST['isbn']
-        category = request.POST['category']
+        category_id = request.POST.get('category')
 
-        books = Book.objects.create(name=name, author=author, isbn=isbn, category=category)
-        books.save()
-        alert = True
-        return render(request, "add_book.html", {'alert':alert})
-    return render(request, "add_book.html")
+        # Получаем объекты автора и категории
+        try:
+            author = Author.objects.get(id=author_id)
+            category = Category.objects.get(id=category_id) if category_id else None
+
+            books = Book.objects.create(name=name, author=author, isbn=isbn, category=category)
+            books.save()
+            alert = True
+            return render(request, "add_book.html", {'alert':alert})
+        except (Author.DoesNotExist, Category.DoesNotExist) as e:
+            error = "Автор или категория не найдены"
+            return render(request, "add_book.html", {'error':error})
+
+    # Передаем списки авторов и категорий для выпадающих списков
+    authors = Author.objects.all()
+    categories = Category.objects.all()
+    return render(request, "add_book.html", {'authors': authors, 'categories': categories})
 
 @login_required(login_url = '/admin_login')
 def view_books(request):
@@ -41,8 +53,8 @@ def issue_book(request):
         form = forms.IssueBookForm(request.POST)
         if form.is_valid():
             obj = models.IssuedBook()
-            obj.student_id = request.POST['name2']
-            obj.isbn = request.POST['isbn2']
+            obj.student_id = form.cleaned_data['name2']
+            obj.book_id = form.cleaned_data['isbn2']
             obj.save()
             alert = True
             return render(request, "issue_book.html", {'obj':obj, 'alert':alert})
@@ -50,44 +62,59 @@ def issue_book(request):
 
 @login_required(login_url = '/admin_login')
 def view_issued_book(request):
-    issuedBooks = IssuedBook.objects.all()
+    issuedBooks = IssuedBook.objects.select_related('book', 'student', 'student__user').all()
     details = []
     for issued in issuedBooks:
-        days = (date.today()-issued.issued_date)
-        d=days.days
-        fine=0
-        if d>14:
-            day=d-14
-            fine=day*5
-        books = list(models.Book.objects.filter(isbn=issued.isbn))
-        students = list(models.Student.objects.filter(user=issued.student_id))
-        if books and students:
-            t=(students[0].user, students[0].user_id, books[0].name, books[0].isbn, issued.issued_date, issued.expiry_date, fine, issued.id)
-            details.append(t)
-    return render(request, "view_issued_book.html", {'issuedBooks':issuedBooks, 'details':details})
+        days = (date.today() - issued.issued_date)
+        d = days.days
+        fine = 0
+        if d > 14:
+            day = d - 14
+            fine = day * 5
+
+        t = (
+            issued.student.user,
+            issued.student.user_id,
+            issued.book.name,
+            issued.book.isbn,
+            issued.issued_date,
+            issued.expiry_date,
+            fine,
+            issued.id
+        )
+        details.append(t)
+    return render(request, "view_issued_book.html", {'issuedBooks': issuedBooks, 'details': details})
 
 @login_required(login_url = '/student_login')
 def student_issued_books(request):
-    student = Student.objects.filter(user_id=request.user.id)
-    issuedBooks = IssuedBook.objects.filter(student_id=student[0].user_id)
-    li1 = []
-    li2 = []
+    try:
+        student = Student.objects.get(user_id=request.user.id)
+        issuedBooks = IssuedBook.objects.filter(student=student).select_related('book', 'book__author')
+        li1 = []
+        li2 = []
 
-    for i in issuedBooks:
-        books = Book.objects.filter(isbn=i.isbn)
-        for book in books:
-            t=(request.user.id, request.user.get_full_name, book.name,book.author)
+        for issued in issuedBooks:
+            t = (
+                request.user.id,
+                request.user.get_full_name,
+                issued.book.name,
+                issued.book.author.name
+            )
             li1.append(t)
 
-        days=(date.today()-i.issued_date)
-        d=days.days
-        fine=0
-        if d>15:
-            day=d-14
-            fine=day*5
-        t=(issuedBooks[0].issued_date, issuedBooks[0].expiry_date, fine)
-        li2.append(t)
-    return render(request,'student_issued_books.html',{'li1':li1, 'li2':li2})
+            days = (date.today() - issued.issued_date)
+            d = days.days
+            fine = 0
+            if d > 15:
+                day = d - 14
+                fine = day * 5
+            t = (issued.issued_date, issued.expiry_date, fine)
+            li2.append(t)
+    except Student.DoesNotExist:
+        li1 = []
+        li2 = []
+
+    return render(request, 'student_issued_books.html', {'li1': li1, 'li2': li2})
 
 @login_required(login_url = '/student_login')
 def profile(request):

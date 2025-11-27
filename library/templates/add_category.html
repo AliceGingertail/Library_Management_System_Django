@@ -1,32 +1,21 @@
 {% extends 'admin_navbar.html' %}
 {% load static %}
-{% block title %} Add Category {% endblock %}
+{% block title %} Добавить категорию {% endblock %}
 {% block css %}
 {% endblock %}
 {% block body %}
 <div class="container">
+    <h2 class="mt-4 mb-4">Добавить категорию</h2>
     <form method="POST"> {% csrf_token %}
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Category Name</i></label>
-            <input type="text" class="form-control mt-2" name="name" placeholder="Enter Category Name" required>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Description</i></label>
-            <textarea class="form-control mt-2" name="description" placeholder="Enter Description"></textarea>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-outline-primary mt-4">Add Category</button>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-outline-primary mt-4">Добавить категорию</button>
+    </form>
 </div>
-</form>
 {% endblock %}
 {% block js %}
 <script>
     {% if alert %}
-    alert("Category is added successfully.")
+    alert("Категория успешно добавлена.")
     document.location = "/view_categories"
     {% endif %}
 </script>

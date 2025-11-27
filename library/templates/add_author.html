@@ -1,39 +1,21 @@
 {% extends 'admin_navbar.html' %}
 {% load static %}
-{% block title %} Add Author {% endblock %}
+{% block title %} Добавить автора {% endblock %}
 {% block css %}
 {% endblock %}
 {% block body %}
 <div class="container">
+    <h2 class="mt-4 mb-4">Добавить автора</h2>
     <form method="POST"> {% csrf_token %}
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Author Name</i></label>
-            <input type="text" class="form-control mt-2" name="name" placeholder="Enter name of the Author" required>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Date of Birth</i></label>
-            <input type="date" class="form-control mt-2" name="date_of_birth">
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Country</i></label>
-            <input type="text" class="form-control mt-2" name="country" placeholder="Enter Country" required>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-outline-primary mt-4">Add Author</button>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-outline-primary mt-4">Добавить автора</button>
+    </form>
 </div>
-</form>
 {% endblock %}
 {% block js %}
 <script>
     {% if alert %}
-    alert("Author is added successfully.")
+    alert("Автор успешно добавлен.")
     document.location = "/view_authors"
     {% endif %}
 </script>

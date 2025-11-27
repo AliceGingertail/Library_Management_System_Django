@@ -87,13 +87,7 @@ class StudentRegistrationForm(forms.ModelForm):
                 ('10', '10 класс'),
                 ('11', '11 класс'),
             ]),
-            'branch': forms.Select(attrs={'class': 'form-control'}, choices=[
-                ('', 'Выберите филиал'),
-                ('Главный', 'Главный филиал'),
-                ('Центральный', 'Центральный филиал'),
-                ('Северный', 'Северный филиал'),
-                ('Южный', 'Южный филиал'),
-            ]),
+            'branch': forms.Select(attrs={'class': 'form-control'}),
             'roll_no': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите номер'}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+7 (___) ___-__-__'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
@@ -105,6 +99,12 @@ class StudentRegistrationForm(forms.ModelForm):
             'phone': 'Телефон',
             'image': 'Фото студента',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Загружаем филиалы из БД
+        self.fields['branch'].queryset = models.LibraryBranch.objects.all()
+        self.fields['branch'].required = False
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -121,10 +121,20 @@ class StudentRegistrationForm(forms.ModelForm):
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
         # Убираем лишние символы
-        cleaned_phone = phone.replace(' ', '').replace('(', '').replace(')', '').replace('-', '')
-        # Проверка на корректность телефона (только цифры и +, от 10 до 15 символов)
-        if not re.match(r'^\+?\d{10,15}$', cleaned_phone):
-            raise ValidationError('Введите корректный номер телефона (10-15 цифр)')
+        cleaned_phone = phone.replace(' ', '').replace('(', '').replace(')', '').replace('-', '').replace('+', '')
+
+        # Проверка формата РФ: +7 и 10 цифр (или просто 11 цифр начиная с 7 или 8)
+        if phone.startswith('+7'):
+            # Формат +7XXXXXXXXXX
+            if not re.match(r'^\+7\d{10}$', phone.replace(' ', '').replace('(', '').replace(')', '').replace('-', '')):
+                raise ValidationError('Введите корректный номер телефона РФ в формате +7 (XXX) XXX-XX-XX')
+        elif phone.startswith('7') or phone.startswith('8'):
+            # Формат 7XXXXXXXXXX или 8XXXXXXXXXX
+            if len(cleaned_phone) != 11:
+                raise ValidationError('Введите корректный номер телефона РФ (11 цифр)')
+        else:
+            raise ValidationError('Номер телефона должен начинаться с +7, 7 или 8')
+
         return phone
 
     def clean(self):

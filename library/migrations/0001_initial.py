@@ -137,18 +137,17 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("classroom", models.CharField(max_length=10, verbose_name="Класс")),
-                ("branch", models.CharField(max_length=10, verbose_name="Филиал")),
                 (
                     "roll_no",
                     models.CharField(blank=True, max_length=3, verbose_name="Номер"),
                 ),
                 (
                     "phone",
-                    models.CharField(blank=True, max_length=10, verbose_name="Телефон"),
+                    models.CharField(blank=True, max_length=20, verbose_name="Телефон"),
                 ),
                 (
                     "image",
-                    models.ImageField(blank=True, upload_to="", verbose_name="Фото"),
+                    models.ImageField(blank=True, upload_to="students/", verbose_name="Фото"),
                 ),
                 (
                     "user",
@@ -156,6 +155,17 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,
                         verbose_name="Пользователь",
+                    ),
+                ),
+                (
+                    "branch",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="students",
+                        to="library.librarybranch",
+                        verbose_name="Филиал",
                     ),
                 ),
             ],

@@ -132,10 +132,17 @@ class Student(models.Model):
         verbose_name="Пользователь"
     )
     classroom = models.CharField(max_length=10, verbose_name="Класс")
-    branch = models.CharField(max_length=10, verbose_name="Филиал")
+    branch = models.ForeignKey(
+        LibraryBranch,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='students',
+        verbose_name="Филиал"
+    )
     roll_no = models.CharField(max_length=3, blank=True, verbose_name="Номер")
-    phone = models.CharField(max_length=10, blank=True, verbose_name="Телефон")
-    image = models.ImageField(upload_to="", blank=True, verbose_name="Фото")
+    phone = models.CharField(max_length=20, blank=True, verbose_name="Телефон")
+    image = models.ImageField(upload_to="students/", blank=True, verbose_name="Фото")
 
     class Meta:
         verbose_name = "Студент"
@@ -143,7 +150,8 @@ class Student(models.Model):
         ordering = ['user__username']
 
     def __str__(self):
-        return str(self.user) + " ["+str(self.branch)+']' + " ["+str(self.classroom)+']' + " ["+str(self.roll_no)+']'
+        branch_name = self.branch.name if self.branch else "Без филиала"
+        return str(self.user) + " ["+branch_name+']' + " ["+str(self.classroom)+']' + " ["+str(self.roll_no)+']'
 
 
 def expiry():

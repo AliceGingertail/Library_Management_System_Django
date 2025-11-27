@@ -1,124 +1,157 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <title>{% block title %} {% endblock %}</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+        .navbar-brand, .navbar-text {
+            color: white !important;
+            font-weight: 700;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        .dropdown-menu {
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+    </style>
     {% block css %}
     {% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Library Management System</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <a class="navbar-brand" href="#">
+              <i class="fas fa-book-reader"></i> Библиотека - Панель Администратора
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Переключить навигацию">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Books
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBooks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-book"></i> Книги
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_book/">Add Book</a></li>
-                  <li><a class="dropdown-item" href="/view_books/">View All Books</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownBooks">
+                  <li><a class="dropdown-item" href="/add_book/"><i class="fas fa-plus"></i> Добавить книгу</a></li>
+                  <li><a class="dropdown-item" href="/view_books/"><i class="fas fa-list"></i> Все книги</a></li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/view_students/">Students</a>
+                <a class="nav-link" href="/view_students/">
+                    <i class="fas fa-user-graduate"></i> Студенты
+                </a>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Issue Book
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownIssue" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-hand-holding"></i> Выдача книг
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/issue_book/">Issue A Book</a></li>
-                  <li><a class="dropdown-item" href="/view_issued_book/">View Issued Books</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownIssue">
+                  <li><a class="dropdown-item" href="/issue_book/"><i class="fas fa-plus"></i> Выдать книгу</a></li>
+                  <li><a class="dropdown-item" href="/view_issued_book/"><i class="fas fa-list"></i> Выданные книги</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Authors
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAuthors" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-pen-fancy"></i> Авторы
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_author/">Add Author</a></li>
-                  <li><a class="dropdown-item" href="/view_authors/">View Authors</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownAuthors">
+                  <li><a class="dropdown-item" href="/add_author/"><i class="fas fa-plus"></i> Добавить автора</a></li>
+                  <li><a class="dropdown-item" href="/view_authors/"><i class="fas fa-list"></i> Все авторы</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Publishers
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPublishers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-building"></i> Издатели
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_publisher/">Add Publisher</a></li>
-                  <li><a class="dropdown-item" href="/view_publishers/">View Publishers</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownPublishers">
+                  <li><a class="dropdown-item" href="/add_publisher/"><i class="fas fa-plus"></i> Добавить издателя</a></li>
+                  <li><a class="dropdown-item" href="/view_publishers/"><i class="fas fa-list"></i> Все издатели</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Categories
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategories" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-tags"></i> Категории
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_category/">Add Category</a></li>
-                  <li><a class="dropdown-item" href="/view_categories/">View Categories</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownCategories">
+                  <li><a class="dropdown-item" href="/add_category/"><i class="fas fa-plus"></i> Добавить категорию</a></li>
+                  <li><a class="dropdown-item" href="/view_categories/"><i class="fas fa-list"></i> Все категории</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Branches
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBranches" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-map-marker-alt"></i> Филиалы
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_branch/">Add Branch</a></li>
-                  <li><a class="dropdown-item" href="/view_branches/">View Branches</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownBranches">
+                  <li><a class="dropdown-item" href="/add_branch/"><i class="fas fa-plus"></i> Добавить филиал</a></li>
+                  <li><a class="dropdown-item" href="/view_branches/"><i class="fas fa-list"></i> Все филиалы</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Staff
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownStaff" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-users"></i> Сотрудники
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_staff/">Add Staff</a></li>
-                  <li><a class="dropdown-item" href="/view_staff/">View Staff</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownStaff">
+                  <li><a class="dropdown-item" href="/add_staff/"><i class="fas fa-plus"></i> Добавить сотрудника</a></li>
+                  <li><a class="dropdown-item" href="/view_staff/"><i class="fas fa-list"></i> Все сотрудники</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Reservations
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownReservations" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-bookmark"></i> Резервации
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_reservation/">Add Reservation</a></li>
-                  <li><a class="dropdown-item" href="/view_reservations/">View Reservations</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownReservations">
+                  <li><a class="dropdown-item" href="/add_reservation/"><i class="fas fa-plus"></i> Добавить резервацию</a></li>
+                  <li><a class="dropdown-item" href="/view_reservations/"><i class="fas fa-list"></i> Все резервации</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Fines
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFines" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-money-bill-wave"></i> Штрафы
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/add_fine/">Add Fine</a></li>
-                  <li><a class="dropdown-item" href="/view_fines/">View Fines</a></li>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownFines">
+                  <li><a class="dropdown-item" href="/add_fine/"><i class="fas fa-plus"></i> Добавить штраф</a></li>
+                  <li><a class="dropdown-item" href="/view_fines/"><i class="fas fa-list"></i> Все штрафы</a></li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/logout/">Logout</a>
+                <a class="nav-link" href="/logout/">
+                    <i class="fas fa-sign-out-alt"></i> Выход
+                </a>
               </li>
             </ul>
-            <span class="navbar-text" style="font-weight:600;">
-              Welcome Admin: {{request.user}}
+            <span class="navbar-text">
+              <i class="fas fa-user-shield"></i> Администратор: {{request.user}}
             </span>
           </div>
         </div>
       </nav>
-      {% block body %}
-      {% endblock %}
+      <div class="py-4">
+          {% block body %}
+          {% endblock %}
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

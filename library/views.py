@@ -114,20 +114,26 @@ def edit_profile(request):
     if request.method == "POST":
         email = request.POST['email']
         phone = request.POST['phone']
-        branch = request.POST['branch']
+        branch_id = request.POST.get('branch')
         classroom = request.POST['classroom']
         roll_no = request.POST['roll_no']
 
         student.user.email = email
         student.phone = phone
-        student.branch = branch
+        # Обрабатываем ForeignKey к LibraryBranch
+        if branch_id:
+            student.branch = LibraryBranch.objects.get(id=branch_id)
+        else:
+            student.branch = None
         student.classroom = classroom
         student.roll_no = roll_no
         student.user.save()
         student.save()
         alert = True
-        return render(request, "edit_profile.html", {'alert':alert})
-    return render(request, "edit_profile.html")
+        return render(request, "edit_profile.html", {'alert':alert, 'branches': LibraryBranch.objects.all()})
+
+    branches = LibraryBranch.objects.all()
+    return render(request, "edit_profile.html", {'branches': branches})
 
 def delete_book(request, myid):
     books = Book.objects.filter(id=myid)

@@ -1,30 +1,140 @@
 {% extends 'basic.html' %}
 {% load static %}
-{% block title %} Library Management System {% endblock %}
+{% block title %} Система управления библиотекой {% endblock %}
 {% block css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 0;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        height: 100%;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    .btn-custom {
+        border-radius: 50px;
+        padding: 12px 40px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+    .btn-custom:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+</style>
 {% endblock %}
 {% block body %}
-<div class="p-4 bg-light">
-    <div class="container-fluid py-3">
-      <h1 class="display-5 fw-bold">Welcome to Library Management System</h1>
-      <h2 class="display-5 fw-bold">By - Ankit Gupta</h2>
-      <p class="col-md-8 fs-4">You can register as student. You will be able to issue any book thorugh the admin. After that you need to return the book within 14 days or else a fine of Rs 5 will be charged per day till the book is returned.</p>
-      <a href="/student_registration/" class="btn btn-primary btn-lg">Register as Student</a>
+<div class="container-fluid px-4">
+    <div class="hero-section text-center mb-5">
+        <div class="container py-5">
+            <h1 class="display-3 fw-bold mb-4">📚 Система управления библиотекой</h1>
+            <p class="lead fs-4 mb-4">Современная система для управления книгами, студентами и выдачей литературы</p>
+            <p class="fs-5 mb-4">
+                Зарегистрируйтесь как студент и получите доступ к библиотечным ресурсам.
+                После регистрации вы сможете бронировать книги через администратора.
+                Возврат книг необходим в течение 14 дней, иначе штраф 5₽ за каждый день просрочки.
+            </p>
+            <a href="/student_registration/" class="btn btn-light btn-lg btn-custom">
+                <i class="fas fa-user-plus"></i> Регистрация студента
+            </a>
+        </div>
     </div>
-    <br>
-    <div class="container">
-  <div class="row">
 
-    <div class="col-lg-6">
-      <img src="{% static 'admin.png' %}" width="50%" height="50%" alt=""><br><br>
-        <a class="btn btn-outline-primary btn-lg" style="text-align:center" href="/admin_login/">Admin</a>
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="card feature-card border-0 shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <img src="{% static 'admin.png' %}" width="60%" height="auto" alt="Администратор" class="img-fluid">
+                    </div>
+                    <h3 class="card-title mb-3">👨‍💼 Вход для администратора</h3>
+                    <p class="card-text text-muted mb-4">Управление книгами, студентами, филиалами и выдачей литературы</p>
+                    <a class="btn btn-primary btn-lg btn-custom" href="/admin_login/">
+                        <i class="fas fa-sign-in-alt"></i> Войти как админ
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card feature-card border-0 shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <img src="{% static 'students.png' %}" width="60%" height="auto" alt="Студент" class="img-fluid">
+                    </div>
+                    <h3 class="card-title mb-3">🎓 Вход для студента</h3>
+                    <p class="card-text text-muted mb-4">Просмотр профиля, выданных книг и управление аккаунтом</p>
+                    <a class="btn btn-success btn-lg btn-custom" href="/student_login/">
+                        <i class="fas fa-sign-in-alt"></i> Войти как студент
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="col-lg-6">
-      <img src="{% static 'students.png' %}" width="50%" height="50%" alt=""><br><br>
-      <a class="btn btn-outline-primary btn-lg" href="/student_login/">Student</a>
+    <!-- Таблица всех книг -->
+    <div class="container mt-5 mb-5">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h3 class="mb-0">
+                    <i class="fas fa-books"></i> 📚 Все книги в библиотеке
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                {% if books %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead style="background-color: #f8f9fa;">
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> №</th>
+                                <th><i class="fas fa-book"></i> Название</th>
+                                <th><i class="fas fa-pen-fancy"></i> Автор</th>
+                                <th><i class="fas fa-building"></i> Издатель</th>
+                                <th><i class="fas fa-barcode"></i> ISBN</th>
+                                <th><i class="fas fa-tags"></i> Категория</th>
+                                <th><i class="fas fa-map-marker-alt"></i> Филиал</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for book in books %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ book.name }}</strong></td>
+                                <td>{{ book.author.name }}</td>
+                                <td>{{ book.publisher.name|default:"—" }}</td>
+                                <td><code>{{ book.isbn }}</code></td>
+                                <td>
+                                    {% if book.category %}
+                                        <span class="badge bg-primary">{{ book.category.name }}</span>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td>{{ book.branch.name|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center p-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Книги пока не добавлены. Зарегистрируйтесь и начните использовать библиотеку!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
-  </div>
 </div>
 {% endblock %}

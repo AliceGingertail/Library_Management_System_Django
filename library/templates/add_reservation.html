@@ -1,0 +1,22 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} Добавить резервирование {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+<div class="container">
+    <h2 class="mt-4 mb-4">Добавить резервирование</h2>
+    <form method="POST"> {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-outline-primary mt-4">Добавить резервирование</button>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    {% if alert %}
+    alert("Резервирование успешно добавлено.")
+    document.location = "/view_reservations"
+    {% endif %}
+</script>
+{% endblock %}

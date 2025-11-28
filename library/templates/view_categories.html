@@ -1,0 +1,30 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} All Categories {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center"><u>All Categories List</u></h1>
+    <table class="table table-hover" id="example">
+        <thead>
+            <tr>
+                <th>Sr.No</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{forloop.counter}}.</td>
+                <td>{{category.name}}</td>
+                <td>{{category.description}}</td>
+                <td><a href="/delete_category/{{category.id}}/" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

@@ -1,35 +1,47 @@
 {% extends 'basic.html' %}
 {% load static %}
-{% block title %} Library Management System {% endblock %}
+{% block title %} Вход студента {% endblock %}
 {% block css %}
+<style>
+    body{
+        background-image: url("{% static 'images/c.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
 {% endblock %}
 {% block body %}
 <div class="container">
-<br>
-<h1 class="text-center"><u>Student Login</u></h1>
-    <form method="POST"> {% csrf_token %}
+    <div class="row">
+        <div class="jumbotron col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-10 offset-1 mt-4">
+            <h3 class="text-center">Вход для студентов</h3>
+            <hr>
+            <form method="POST"> {% csrf_token %}
+                <div class="form-group mt-4">
+                    <label><i style="font-weight: bold;">{{ form.username.label }}</i></label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-danger">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group mt-4">
+                    <label><i style="font-weight: bold;">{{ form.password.label }}</i></label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="text-danger">{{ form.password.errors }}</div>
+                    {% endif %}
+                </div>
 
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Username</i></label>
-            <input type="text" class="form-control mt-2" name="username" placeholder="Enter Username" required>
+                {% if error %}
+                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-success mt-4 col-md-12">Войти</button>
+                <a href="/student_registration" type="button" class="btn btn-primary mt-2 col-md-12">Зарегистрироваться</a>
+            </form>
         </div>
     </div>
-
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Password</i></label>
-            <input type="password" class="form-control mt-2" name="password" placeholder="Enter Password" required>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-outline-primary mt-4">Login</button>
 </div>
 {% endblock %}
 {% block js %}
-<script>
-    {% if alert %}
-    alert("Invalid Username or Password.")
-    document.location = "/student_login"
-    {% endif %}
-</script>
 {% endblock %}

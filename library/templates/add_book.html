@@ -1,47 +1,120 @@
 {% extends 'admin_navbar.html' %}
 {% load static %}
-{% block title %} Library Management System {% endblock %}
+{% block title %} Добавить книгу {% endblock %}
+
 {% block css %}
+<style>
+.add-form-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.form-label {
+    font-weight: 600;
+    color: #555;
+}
+.btn-add {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 12px 40px;
+    font-weight: 600;
+}
+.btn-add:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+}
+</style>
 {% endblock %}
+
 {% block body %}
 <div class="container">
-    <form method="POST"> {% csrf_token %}
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Book Name</i></label>
-            <input type="text" class="form-control mt-2" name="name" placeholder="Enter name of the Book" required>
-        </div>
-    </div>
+    <div class="add-form-container">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-book-medical"></i> Добавить книгу
+        </h2>
+        <form method="POST"> {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-heading"></i> {{ form.name.label }}</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="errorlist">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
 
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Author Name</i></label>
-            <input type="text" class="form-control mt-2" name="author" placeholder="Enter name of the Author" required>
-        </div>
-    </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-pen-fancy"></i> {{ form.author.label }}</label>
+                    {{ form.author }}
+                    {% if form.author.errors %}
+                        <div class="errorlist">{{ form.author.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">Данные загружаются из БД</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-building"></i> {{ form.publisher.label }}</label>
+                    {{ form.publisher }}
+                    {% if form.publisher.errors %}
+                        <div class="errorlist">{{ form.publisher.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">Опционально, из БД</small>
+                </div>
+            </div>
 
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">ISBN Number</i></label>
-            <input type="number" class="form-control mt-2" name="isbn" placeholder="Enter ISBN number of the book" required>
-        </div>
-    </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-barcode"></i> {{ form.isbn.label }}</label>
+                    {{ form.isbn }}
+                    {% if form.isbn.errors %}
+                        <div class="errorlist">{{ form.isbn.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-tags"></i> {{ form.category.label }}</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <div class="errorlist">{{ form.category.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">Опционально, из БД</small>
+                </div>
+            </div>
 
-    <div class="row mt-4">
-        <div class="form-group col-md-12">
-            <label><i style="font-weight: bold;">Category</i></label>
-            <input type="text" class="form-control mt-2" name="category" placeholder="Enter Category of the book" required>
-        </div>
+            <div class="mb-4">
+                <label class="form-label"><i class="fas fa-map-marker-alt"></i> {{ form.branch.label }}</label>
+                {{ form.branch }}
+                {% if form.branch.errors %}
+                    <div class="errorlist">{{ form.branch.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Филиал библиотеки (опционально)</small>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-add">
+                    <i class="fas fa-plus-circle"></i> Добавить книгу
+                </button>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-outline-primary mt-4">Add Book</button>
 </div>
-</form>
+
 {% endblock %}
+
 {% block js %}
 <script>
     {% if alert %}
-    alert("Book is added successfully.")
-    document.location = "/view_books"
+    alert("Книга успешно добавлена!");
+    window.location.href = "/view_books/";
     {% endif %}
 </script>
 {% endblock %}
